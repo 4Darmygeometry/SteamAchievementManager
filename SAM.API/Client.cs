@@ -1,21 +1,21 @@
 ﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
- * 
+ *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
  * arising from the use of this software.
- * 
+ *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would
  *    be appreciated but is not required.
- * 
+ *
  * 2. Altered source versions must be plainly marked as such, and must not
  *    be misrepresented as being the original software.
- * 
+ *
  * 3. This notice may not be removed or altered from any source
  *    distribution.
  */
@@ -29,12 +29,13 @@ namespace SAM.API
 {
     public class Client : IDisposable
     {
-        public Wrappers.SteamClient018 SteamClient;
-        public Wrappers.SteamUser012 SteamUser;
-        public Wrappers.SteamUserStats007 SteamUserStats;
-        public Wrappers.SteamUtils005 SteamUtils;
-        public Wrappers.SteamApps001 SteamApps001;
-        public Wrappers.SteamApps008 SteamApps008;
+        public Wrappers.SteamClient018 SteamClient { get; set; }
+        public Wrappers.SteamUser019 SteamUser { get; set; }
+        public Wrappers.SteamUserStats007 SteamUserStats { get; set; }
+        public Wrappers.SteamUtils009 SteamUtils { get; set; }
+        public Wrappers.SteamApps001 SteamApps001 { get; set; }
+        public Wrappers.SteamApps008 SteamApps008 { get; set; }
+        public bool IsConnectToSteam { get; set; }
 
         private bool _IsDisposed = false;
         private int _Pipe;
@@ -42,7 +43,7 @@ namespace SAM.API
 
         private readonly List<ICallback> _Callbacks = new List<ICallback>();
 
-        public void Initialize(long appId)
+        public bool Initialize(long appId)
         {
             if (string.IsNullOrEmpty(Steam.GetInstallPath()) == true)
             {
@@ -77,7 +78,7 @@ namespace SAM.API
                 throw new ClientInitializeException(ClientInitializeFailure.ConnectToGlobalUser, "failed to connect to global user");
             }
 
-            this.SteamUtils = this.SteamClient.GetSteamUtils004(this._Pipe);
+            this.SteamUtils = this.SteamClient.GetSteamUtils009(this._Pipe);
             if (appId > 0 && this.SteamUtils.GetAppId() != (uint)appId)
             {
                 throw new ClientInitializeException(ClientInitializeFailure.AppIdMismatch, "appID mismatch");
@@ -87,6 +88,7 @@ namespace SAM.API
             this.SteamUserStats = this.SteamClient.GetSteamUserStats006(this._User, this._Pipe);
             this.SteamApps001 = this.SteamClient.GetSteamApps001(this._User, this._Pipe);
             this.SteamApps008 = this.SteamClient.GetSteamApps008(this._User, this._Pipe);
+            return true;
         }
 
         ~Client()
@@ -101,6 +103,8 @@ namespace SAM.API
                 return;
             }
 
+            this._IsDisposed = true;
+
             if (this.SteamClient != null && this._Pipe > 0)
             {
                 if (this._User > 0)
@@ -113,7 +117,7 @@ namespace SAM.API
                 this._Pipe = 0;
             }
 
-            this._IsDisposed = true;
+            this._IsDisposed = false;
         }
 
         public void Dispose()
@@ -141,9 +145,7 @@ namespace SAM.API
 
             this._RunningCallbacks = true;
 
-            Types.CallbackMessage message;
-            int call;
-            while (Steam.GetCallback(this._Pipe, out message, out call) == true)
+            while (Steam.GetCallback(this._Pipe, out Types.CallbackMessage message, out int call) == true)
             {
                 var callbackId = message.Id;
                 foreach (ICallback callback in this._Callbacks.Where(

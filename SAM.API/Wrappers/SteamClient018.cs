@@ -1,28 +1,28 @@
 ﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
- * 
+ *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
  * arising from the use of this software.
- * 
+ *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would
  *    be appreciated but is not required.
- * 
+ *
  * 2. Altered source versions must be plainly marked as such, and must not
  *    be misrepresented as being the original software.
- * 
+ *
  * 3. This notice may not be removed or altered from any source
  *    distribution.
  */
 
+using SAM.API.Interfaces;
 using System;
 using System.Runtime.InteropServices;
-using SAM.API.Interfaces;
 
 namespace SAM.API.Wrappers
 {
@@ -116,9 +116,9 @@ namespace SAM.API.Wrappers
         #endregion
 
         #region GetSteamUser012
-        public SteamUser012 GetSteamUser012(int user, int pipe)
+        public SteamUser019 GetSteamUser012(int user, int pipe)
         {
-            return this.GetISteamUser<SteamUser012>(user, pipe, "SteamUser012");
+            return this.GetISteamUser<SteamUser019>(user, pipe, "SteamUser019");
         }
         #endregion
 
@@ -147,7 +147,7 @@ namespace SAM.API.Wrappers
         #region GetSteamUserStats007
         public SteamUserStats007 GetSteamUserStats006(int user, int pipe)
         {
-            return this.GetISteamUserStats<SteamUserStats007>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION007");
+            return this.GetISteamUserStats<SteamUserStats007>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION011");
         }
         #endregion
 
@@ -173,9 +173,9 @@ namespace SAM.API.Wrappers
         #endregion
 
         #region GetSteamUtils004
-        public SteamUtils005 GetSteamUtils004(int pipe)
+        public SteamUtils009 GetSteamUtils009(int pipe)
         {
-            return this.GetISteamUtils<SteamUtils005>(pipe, "SteamUtils005");
+            return this.GetISteamUtils<SteamUtils009>(pipe, "SteamUtils009");
         }
         #endregion
 

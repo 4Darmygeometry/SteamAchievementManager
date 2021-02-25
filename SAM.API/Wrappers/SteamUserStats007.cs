@@ -1,28 +1,28 @@
 ﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
- * 
+ *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
  * arising from the use of this software.
- * 
+ *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would
  *    be appreciated but is not required.
- * 
+ *
  * 2. Altered source versions must be plainly marked as such, and must not
  *    be misrepresented as being the original software.
- * 
+ *
  * 3. This notice may not be removed or altered from any source
  *    distribution.
  */
 
+using SAM.API.Interfaces;
 using System;
 using System.Runtime.InteropServices;
-using SAM.API.Interfaces;
 
 namespace SAM.API.Wrappers
 {
@@ -36,6 +36,16 @@ namespace SAM.API.Wrappers
         public bool RequestCurrentStats()
         {
             return this.Call<bool, NativeRequestCurrentStats>(this.Functions.RequestCurrentStats, this.ObjectAddress);
+        }
+        #endregion
+
+        #region RequestCurrentStats
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr NativeRequestGlobalAchievementPercentages(IntPtr self);
+
+        public IntPtr RequestGlobalAchievementPercentages()
+        {
+            return this.Call<IntPtr, NativeRequestGlobalAchievementPercentages>(this.Functions.RequestGlobalAchievementPercentages, this.ObjectAddress);
         }
         #endregion
 
@@ -119,6 +129,40 @@ namespace SAM.API.Wrappers
             {
                 var call = this.GetFunction<NativeGetAchievement>(this.Functions.GetAchievement);
                 return call(this.ObjectAddress, nativeName.Handle, out isAchieved);
+            }
+        }
+        #endregion
+
+        #region GetAchievementAndUnlockTime
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private delegate bool NativeGetAchievementAndUnlockTime(
+            IntPtr self,
+            IntPtr name,
+            [MarshalAs(UnmanagedType.I1)] out bool isAchieved, out long unlockTime);
+
+        public bool GetAchievementAndUnlockTime(string name, out bool isAchieved, out long unlockTime)
+        {
+            using (var nativeName = NativeStrings.StringToStringHandle(name))
+            {
+                var call = this.GetFunction<NativeGetAchievementAndUnlockTime>(this.Functions.GetAchievementAndUnlockTime);
+                return call(this.ObjectAddress, nativeName.Handle, out isAchieved, out unlockTime);
+            }
+        }
+        #endregion
+
+        #region GetAchievementAchievedPercent
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate bool NativeGetAchievementAchievedPercent(
+            IntPtr self,
+            IntPtr name, out float unlockTime);
+
+        public bool GetAchievementAchievedPercent(string name, out float percent)
+        {
+            using (var nativeName = NativeStrings.StringToStringHandle(name))
+            {
+                var call = this.GetFunction<NativeGetAchievementAchievedPercent>(this.Functions.GetAchievementAchievedPercent);
+                return call(this.ObjectAddress, nativeName.Handle, out percent);
             }
         }
         #endregion

@@ -20,14 +20,34 @@
  *    distribution.
  */
 
+using System;
 using System.Runtime.InteropServices;
 
-namespace SAM.API.Types
+namespace SAM.API.Interfaces
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct UserStatsStored
+    public struct ISteamUtils009
     {
-        public ulong GameId;
-        public int Result;
+        public IntPtr GetSecondsSinceAppActive;
+        public IntPtr GetSecondsSinceComputerActive;
+        public IntPtr GetConnectedUniverse;
+        public IntPtr GetServerRealTime;
+        public IntPtr GetIPCountry;
+        public IntPtr GetImageSize;
+        public IntPtr GetImageRGBA;
+        public IntPtr GetCSERIPPort;
+        public IntPtr GetCurrentBatteryPower;
+        public IntPtr GetAppID;
+        public IntPtr SetOverlayNotificationPosition;
+        public IntPtr IsAPICallCompleted;
+        public IntPtr GetAPICallFailureReason;
+        public IntPtr GetAPICallResult;
+        public IntPtr RunFrame;
+        public IntPtr GetIPCCallCount;
+        public IntPtr SetWarningMessageHook;
+        public IntPtr IsOverlayEnabled;
+        public IntPtr IsSteamChinaLauncher;
+        public IntPtr IsSteamRunningInVR;
+        public IntPtr OverlayNeedsPresent;
     }
 }

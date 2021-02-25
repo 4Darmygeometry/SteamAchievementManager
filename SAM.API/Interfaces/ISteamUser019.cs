@@ -20,14 +20,30 @@
  *    distribution.
  */
 
+using System;
 using System.Runtime.InteropServices;
 
-namespace SAM.API.Types
+namespace SAM.API.Interfaces
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct UserStatsStored
+    public struct ISteamUser019
     {
-        public ulong GameId;
-        public int Result;
+        public IntPtr GetHSteamUser;
+        public IntPtr LoggedOn;
+        public IntPtr GetSteamID;
+        public IntPtr InitiateGameConnection;
+        public IntPtr TerminateGameConnection;
+        public IntPtr TrackAppUsageEvent;
+        public IntPtr GetUserDataFolder;
+        public IntPtr StartVoiceRecording;
+        public IntPtr StopVoiceRecording;
+        public IntPtr GetCompressedVoice;
+        public IntPtr DecompressVoice;
+        public IntPtr GetAuthSessionTicket;
+        public IntPtr BeginAuthSession;
+        public IntPtr EndAuthSession;
+        public IntPtr CancelAuthTicket;
+        public IntPtr UserHasLicenseForApp;
+        public IntPtr GetPlayerSteamLevel;
     }
 }
