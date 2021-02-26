@@ -2,16 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Company>Gibbed</Company>
-    <Authors>Gibbed</Authors>
-    <Description></Description>
-    <Copyright>Copyright © Gibbed 2019</Copyright>
-    <Version>7.0.0</Version>
-    <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <FileVersion>7.0.0.0</FileVersion>
-    <RepositoryUrl>https://github.com/gibbed/SteamAchievementManager/</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
-    <ApplicationIcon>Pink.ico</ApplicationIcon>
     <Platforms>x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
