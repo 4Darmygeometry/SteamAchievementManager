@@ -4,7 +4,19 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x86</Platforms>
   </PropertyGroup>
+
+  <PropertyGroup Condition=" Exists('$(MSBuildProjectDirectory)\..\..\..\src\Common.CoreLib\Properties\ThisAssembly.Version.cs') ">
+    <DefineConstants>UnifiedVersion;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0"/>
+  </ItemGroup>
+  <ItemGroup Condition=" Exists('$(MSBuildProjectDirectory)\..\..\..\src\Common.CoreLib\Properties\ThisAssembly.Version.cs') ">
+    <Compile Include="..\..\..\src\Common.CoreLib\Properties\AssemblyInfo.Version.cs">
+      <Link>Properties\AssemblyInfo.Version.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\src\Common.CoreLib\Properties\ThisAssembly.Version.cs">
+      <Link>Properties\ThisAssembly.Version.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>
