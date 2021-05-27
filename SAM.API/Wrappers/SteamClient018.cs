@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
+/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -180,7 +180,8 @@ namespace SAM.API.Wrappers
         #endregion
 
         #region GetISteamApps
-        private delegate IntPtr NativeGetISteamApps(int user, int pipe, IntPtr version);
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr NativeGetISteamApps(IntPtr thisptr, int user, int pipe, IntPtr version);
 
         private TClass GetISteamApps<TClass>(int user, int pipe, string version)
             where TClass : INativeWrapper, new()
@@ -189,6 +190,7 @@ namespace SAM.API.Wrappers
             {
                 IntPtr address = this.Call<IntPtr, NativeGetISteamApps>(
                     this.Functions.GetISteamApps,
+                    this.ObjectAddress,
                     user,
                     pipe,
                     nativeVersion.Handle);

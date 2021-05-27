@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
+/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -60,10 +60,10 @@ namespace SAM.API
                 throw new ClientInitializeException(ClientInitializeFailure.Load, "failed to load SteamClient");
             }
 
-            this.SteamClient = Steam.CreateInterface<Wrappers.SteamClient018>("SteamClient018");
+            this.SteamClient = Steam.CreateInterface<Wrappers.SteamClient018>("SteamClient017");
             if (this.SteamClient == null)
             {
-                throw new ClientInitializeException(ClientInitializeFailure.CreateSteamClient, "failed to create ISteamClient018");
+                throw new ClientInitializeException(ClientInitializeFailure.CreateSteamClient, "failed to create ISteamClient017");
             }
 
             this._Pipe = this.SteamClient.CreateSteamPipe();
