@@ -42,6 +42,9 @@ namespace SAM.API
             internal static extern bool SetDllDirectory(string path);
 
             internal const uint LoadWithAlteredSearchPath = 8;
+
+            [DllImport("dl", SetLastError = true, CharSet = CharSet.Unicode)]
+            internal static extern IntPtr dlopen([MarshalAs(UnmanagedType.LPTStr)] string filename, uint flags);
         }
 
         private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
@@ -128,8 +131,17 @@ namespace SAM.API
             {
                 path = Path.Combine(path, "steamclient.dll");
             }
+            IntPtr module;
 
-            IntPtr module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
+            }
+            else
+            {
+                module = Native.dlopen(path, Native.LoadWithAlteredSearchPath);
+            }
+
             if (module == IntPtr.Zero)
             {
                 return false;
