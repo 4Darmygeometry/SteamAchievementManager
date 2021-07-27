@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
+/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -80,12 +80,26 @@ namespace SAM.API
 
         protected void Call<TDelegate>(IntPtr pointer, params object[] args)
         {
-            this.GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
+            try
+            {
+                this.GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         protected TReturn Call<TReturn, TDelegate>(IntPtr pointer, params object[] args)
         {
-            return (TReturn)this.GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
+            try
+            {
+                return (TReturn)this.GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
