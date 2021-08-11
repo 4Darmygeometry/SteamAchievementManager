@@ -90,11 +90,11 @@ namespace SAM.API
             }
         }
 
-        protected TReturn Call<TReturn, TDelegate>(IntPtr pointer, params object[] args)
+        protected TReturn? Call<TReturn, TDelegate>(IntPtr pointer, params object[] args)
         {
             try
             {
-                return (TReturn)this.GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
+                return (TReturn?)this.GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
             }
             catch (Exception)
             {
