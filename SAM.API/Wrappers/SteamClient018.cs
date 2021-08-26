@@ -181,7 +181,7 @@ namespace SAM.API.Wrappers
 
         #region GetISteamApps
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetISteamApps(IntPtr thisptr, int user, int pipe, IntPtr version);
+        private delegate IntPtr NativeGetISteamApps(IntPtr self, int user, int pipe, IntPtr version);
 
         private TClass GetISteamApps<TClass>(int user, int pipe, string version)
             where TClass : INativeWrapper, new()

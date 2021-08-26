@@ -60,7 +60,7 @@ namespace SAM.API
                 throw new ClientInitializeException(ClientInitializeFailure.Load, "failed to load SteamClient");
             }
 
-            this.SteamClient = Steam.CreateInterface<Wrappers.SteamClient018>("SteamClient017");
+            this.SteamClient = Steam.CreateInterface<Wrappers.SteamClient018>("SteamClient018");
             if (this.SteamClient == null)
             {
                 throw new ClientInitializeException(ClientInitializeFailure.CreateSteamClient, "failed to create ISteamClient017");
