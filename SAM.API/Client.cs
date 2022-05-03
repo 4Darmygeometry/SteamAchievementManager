@@ -79,9 +79,10 @@ namespace SAM.API
             }
 
             this.SteamUtils = this.SteamClient.GetSteamUtils009(this._Pipe);
-            if (appId > 0 && this.SteamUtils.GetAppId() != (uint)appId)
+            var currentAppId = this.SteamUtils.GetAppId();
+            if (appId > 0 && currentAppId != (uint)appId)
             {
-                throw new ClientInitializeException(ClientInitializeFailure.AppIdMismatch, "appID mismatch");
+                throw new ClientInitializeException(ClientInitializeFailure.AppIdMismatch, $"appID mismatch, appId: {appId}, currentAppId: {currentAppId}");
             }
 
             this.SteamUser = this.SteamClient.GetSteamUser012(this._User, this._Pipe);
