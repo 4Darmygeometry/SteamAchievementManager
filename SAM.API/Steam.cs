@@ -24,46 +24,56 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace SAM.API
 {
     public static class Steam
     {
-        private struct Native
+        private static class Native
         {
+            [SupportedOSPlatform("Windows")]
             [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
             internal static extern IntPtr GetProcAddress(IntPtr module, string name);
 
+            [SupportedOSPlatform("Windows")]
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
 
+            [SupportedOSPlatform("Windows")]
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool SetDllDirectory(string path);
 
             internal const uint LoadWithAlteredSearchPath = 8;
-
-            [DllImport("dl", SetLastError = true, CharSet = CharSet.Unicode)]
-            internal static extern IntPtr dlopen([MarshalAs(UnmanagedType.LPTStr)] string filename, uint flags);
         }
 
+        [SupportedOSPlatform("Windows")]
         private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
         {
             IntPtr address = Native.GetProcAddress(module, name);
             return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
         }
 
+        [SupportedOSPlatform("Windows")]
         private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
             where TDelegate : class
         {
-            return (TDelegate)((object)GetExportDelegate<TDelegate>(module, name));
+            return (TDelegate)(object)GetExportDelegate<TDelegate>(module, name);
         }
 
         private static IntPtr _Handle = IntPtr.Zero;
 
+        public static Func<string> GetInstallPathDelegate { private get; set; }
+
         public static string GetInstallPath()
         {
-            return (string)Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Valve\Steam", "SteamPath", null);
+            if (GetInstallPathDelegate != null)
+                return GetInstallPathDelegate();
+            if (OperatingSystem.IsWindows())
+                return (string)Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Valve\Steam", "SteamPath", null);
+            else
+                throw new PlatformNotSupportedException();
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -121,7 +131,8 @@ namespace SAM.API
                 return false;
             }
 
-            Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
+            if (OperatingSystem.IsWindows())
+                Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
 
             if (Environment.Is64BitProcess)
             {
@@ -133,13 +144,13 @@ namespace SAM.API
             }
             IntPtr module;
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (OperatingSystem.IsWindows())
             {
                 module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
             }
             else
             {
-                module = Native.dlopen(path, Native.LoadWithAlteredSearchPath);
+                module = NativeLibrary.Load(path);
             }
 
             if (module == IntPtr.Zero)

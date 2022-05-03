@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -8,9 +8,9 @@
     <DefineConstants>UnifiedVersion;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup Condition=" Exists('$(MSBuildProjectDirectory)\..\..\..\src\Common.CoreLib\Properties\ThisAssembly.Version.cs') ">
     <Compile Include="..\..\..\src\Common.CoreLib\Properties\AssemblyInfo.Version.cs">
