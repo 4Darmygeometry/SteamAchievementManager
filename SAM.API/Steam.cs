@@ -32,30 +32,35 @@ namespace SAM.API
     {
         private static class Native
         {
-            [SupportedOSPlatform("Windows")]
-            [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-            internal static extern IntPtr GetProcAddress(IntPtr module, string name);
+            //[SupportedOSPlatform("Windows")]
+            //[DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+            //internal static extern IntPtr GetProcAddress(IntPtr module, string name);
 
-            [SupportedOSPlatform("Windows")]
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
+            //[SupportedOSPlatform("Windows")]
+            //[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            //internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
 
-            [SupportedOSPlatform("Windows")]
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool SetDllDirectory(string path);
+            //internal const uint LoadWithAlteredSearchPath = 8;
 
-            internal const uint LoadWithAlteredSearchPath = 8;
+            internal static IntPtr GetExport(IntPtr handle, string name)
+            {
+                //if (OperatingSystem.IsWindows())
+                //{
+                //    return GetProcAddress(handle, name);
+                //}
+                //else
+                //{
+                return NativeLibrary.GetExport(handle, name);
+                //}
+            }
         }
 
-        [SupportedOSPlatform("Windows")]
         private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
         {
-            IntPtr address = Native.GetProcAddress(module, name);
+            IntPtr address = Native.GetExport(module, name);
             return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
         }
 
-        [SupportedOSPlatform("Windows")]
         private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
             where TDelegate : class
         {
@@ -131,8 +136,8 @@ namespace SAM.API
                 return false;
             }
 
-            if (OperatingSystem.IsWindows())
-                Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
+            //if (OperatingSystem.IsWindows())
+            //    Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
 
             if (Environment.Is64BitProcess)
             {
@@ -144,11 +149,11 @@ namespace SAM.API
             }
             IntPtr module;
 
-            if (OperatingSystem.IsWindows())
-            {
-                module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
-            }
-            else
+            //if (OperatingSystem.IsWindows())
+            //{
+            //    module = Native.Windows.LoadLibraryEx(path, IntPtr.Zero, Native.Windows.LoadWithAlteredSearchPath);
+            //}
+            //else
             {
                 module = NativeLibrary.Load(path);
             }
