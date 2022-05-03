@@ -146,14 +146,32 @@ namespace SAM.API
             //if (OperatingSystem.IsWindows())
             //    Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
 
-            if (Environment.Is64BitProcess)
+            if (OperatingSystem.IsMacOS())
             {
-                path = Path.Combine(path, "steamclient64.dll");
+                path = Path.Combine(path, "steamclient.dylib");
+            }
+            else if (OperatingSystem.IsWindows())
+            {
+                // C:\Program Files (x86)\Steam\steamclient64.dll
+                path = Path.Combine(path,
+                    Environment.Is64BitProcess ?
+                        "steamclient64.dll" :
+                        "steamclient.dll");
+            }
+            else if (OperatingSystem.IsLinux() && !OperatingSystem.IsAndroid())
+            {
+                // /home/{0}/.local/share/Steam/linux64/steamclient.so
+                path = Path.Combine(path,
+                    Environment.Is64BitProcess ?
+                        "linux64" :
+                        "linux32",
+                    "steamclient.so");
             }
             else
             {
-                path = Path.Combine(path, "steamclient.dll");
+                throw new PlatformNotSupportedException();
             }
+
             IntPtr module;
 
             //if (OperatingSystem.IsWindows())
