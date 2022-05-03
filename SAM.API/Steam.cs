@@ -55,16 +55,23 @@ namespace SAM.API
             }
         }
 
-        private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
-        {
-            IntPtr address = Native.GetExport(module, name);
-            return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
-        }
+        //private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
+        //{
+        //    IntPtr address = Native.GetExport(module, name);
+        //    return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
+        //}
+
+        //private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
+        //    where TDelegate : class
+        //{
+        //    return (TDelegate)(object)GetExportDelegate<TDelegate>(module, name);
+        //}
 
         private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
-            where TDelegate : class
+           where TDelegate : class
         {
-            return (TDelegate)(object)GetExportDelegate<TDelegate>(module, name);
+            IntPtr address = Native.GetExport(module, name);
+            return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer<TDelegate>(address);
         }
 
         private static IntPtr _Handle = IntPtr.Zero;
