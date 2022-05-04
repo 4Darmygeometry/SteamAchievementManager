@@ -43,6 +43,8 @@ namespace SAM.API
 
         private readonly List<ICallback> _Callbacks = new List<ICallback>();
 
+        const string KEY_STEAM_APP_ID = "SteamAppId";
+
         public bool Initialize(long appId)
         {
             if (string.IsNullOrEmpty(Steam.GetInstallPath()) == true)
@@ -52,7 +54,7 @@ namespace SAM.API
 
             if (appId != 0)
             {
-                Environment.SetEnvironmentVariable("SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
+                Environment.SetEnvironmentVariable(KEY_STEAM_APP_ID, appId.ToString(CultureInfo.InvariantCulture));
             }
 
             if (Steam.Load() == false)
@@ -82,7 +84,8 @@ namespace SAM.API
             var currentAppId = this.SteamUtils.GetAppId();
             if (appId > 0 && currentAppId != (uint)appId)
             {
-                throw new ClientInitializeException(ClientInitializeFailure.AppIdMismatch, $"appID mismatch, appId: {appId}, currentAppId: {currentAppId}");
+                var envAppId = Environment.GetEnvironmentVariable(KEY_STEAM_APP_ID);
+                throw new ClientInitializeException(ClientInitializeFailure.AppIdMismatch, $"appID mismatch, appId: {appId}, currentAppId: {currentAppId}, envAppId: {envAppId}");
             }
 
             this.SteamUser = this.SteamClient.GetSteamUser012(this._User, this._Pipe);
