@@ -47,6 +47,8 @@ namespace SAM.API
 
         const string KEY_STEAM_APP_ID = "SteamAppId";
 
+        public static bool WriteSteamAppIdTxt { get; set; }
+
         public bool Initialize(long appId)
         {
             if (string.IsNullOrEmpty(Steam.GetInstallPath()) == true)
@@ -66,8 +68,11 @@ namespace SAM.API
                     }
                     else if (OperatingSystem.IsMacOS() || OperatingSystem.IsLinux() && !OperatingSystem.IsAndroid())
                     {
-                        steam_appid_file_path = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "steam_appid.txt");
-                        File.WriteAllText(steam_appid_file_path, appId.ToString());
+                        if (WriteSteamAppIdTxt)
+                        {
+                            steam_appid_file_path = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "steam_appid.txt");
+                            File.WriteAllText(steam_appid_file_path, appId.ToString());
+                        }
                     }
                     else
                     {
