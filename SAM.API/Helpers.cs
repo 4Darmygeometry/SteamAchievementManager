@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -76,6 +76,14 @@ namespace SAM.API
                 return string.Empty;
 
             return UTF8Encoding.UTF8.GetString((byte*)ptr, len);
+        }
+
+        /// <summary>
+        /// Decodes ANSI encoded return string to UTF-8
+        /// </summary>
+        internal static string DecodeANSIReturn(string buffer)
+        {
+            return Encoding.UTF8.GetString(Encoding.Default.GetBytes(buffer));
         }
     }
 

@@ -115,10 +115,10 @@ namespace SAM.API.Wrappers
         }
         #endregion
 
-        #region GetSteamUser012
-        public SteamUser019 GetSteamUser012(int user, int pipe)
+        #region GetSteamUser017
+        public SteamUser017 GetSteamUser017(int user, int pipe)
         {
-            return this.GetISteamUser<SteamUser019>(user, pipe, "SteamUser019");
+            return this.GetISteamUser<SteamUser017>(user, pipe, "SteamUser017");
         }
         #endregion
 
@@ -144,10 +144,10 @@ namespace SAM.API.Wrappers
         }
         #endregion
 
-        #region GetSteamUserStats007
-        public SteamUserStats007 GetSteamUserStats006(int user, int pipe)
+        #region GetSteamUserStats011
+        public SteamUserStats011 GetSteamUserStats011(int user, int pipe)
         {
-            return this.GetISteamUserStats<SteamUserStats007>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION011");
+            return this.GetISteamUserStats<SteamUserStats011>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION011");
         }
         #endregion
 
@@ -172,10 +172,10 @@ namespace SAM.API.Wrappers
         }
         #endregion
 
-        #region GetSteamUtils004
-        public SteamUtils009 GetSteamUtils009(int pipe)
+        #region GetSteamUtils009
+        public SteamUtils007 GetSteamUtils007(int pipe)
         {
-            return this.GetISteamUtils<SteamUtils009>(pipe, "SteamUtils009");
+            return this.GetISteamUtils<SteamUtils007>(pipe, "SteamUtils007");
         }
         #endregion
 
@@ -212,6 +212,35 @@ namespace SAM.API.Wrappers
         public SteamApps008 GetSteamApps008(int user, int pipe)
         {
             return this.GetISteamApps<SteamApps008>(user, pipe, "STEAMAPPS_INTERFACE_VERSION008");
+        }
+        #endregion
+
+        #region GetISteamRemoteStorage
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate IntPtr NativeGetISteamRemoteStorage(IntPtr self, int user, int pipe, IntPtr version);
+
+        private TClass GetISteamRemoteStorage<TClass>(int user, int pipe, string version)
+            where TClass : INativeWrapper, new()
+        {
+            using (var nativeVersion = NativeStrings.StringToStringHandle(version))
+            {
+                IntPtr address = this.Call<IntPtr, NativeGetISteamRemoteStorage>(
+                    this.Functions.GetISteamRemoteStorage,
+                    this.ObjectAddress,
+                    user,
+                    pipe,
+                    nativeVersion.Handle);
+                var result = new TClass();
+                result.SetupFunctions(address);
+                return result;
+            }
+        }
+        #endregion
+
+        #region GetSteamRemoteStorage012
+        public SteamRemoteStorage012 GetSteamRemoteStorage012(int user, int pipe)
+        {
+            return this.GetISteamRemoteStorage<SteamRemoteStorage012>(user, pipe, "STEAMREMOTESTORAGE_INTERFACE_VERSION012");
         }
         #endregion
     }

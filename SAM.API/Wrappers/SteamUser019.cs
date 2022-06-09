@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 
 namespace SAM.API.Wrappers
 {
-    public class SteamUser019 : NativeWrapper<ISteamUser019>
+    public class SteamUser017 : NativeWrapper<ISteamUser019>
     {
         #region GetSteamID
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]

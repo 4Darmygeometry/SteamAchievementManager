@@ -29,7 +29,7 @@ namespace SAM.API.Wrappers
     /// <summary>
     /// https://partner.steamgames.com/doc/api/ISteamUtils?language=english
     /// </summary>
-    public class SteamUtils009 : NativeWrapper<ISteamUtils009>
+    public class SteamUtils007 : NativeWrapper<ISteamUtils009>
     {
         #region GetConnectedUniverse
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]

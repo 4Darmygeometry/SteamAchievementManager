@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace SAM.API
 {
@@ -30,7 +31,6 @@ namespace SAM.API
     {
         protected IntPtr ObjectAddress;
         protected TNativeFunctions Functions;
-
         public override string ToString()
         {
             return string.Format(

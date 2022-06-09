@@ -32,11 +32,12 @@ namespace SAM.API
     public class Client : IDisposable
     {
         public Wrappers.SteamClient018 SteamClient { get; set; }
-        public Wrappers.SteamUser019 SteamUser { get; set; }
-        public Wrappers.SteamUserStats007 SteamUserStats { get; set; }
-        public Wrappers.SteamUtils009 SteamUtils { get; set; }
+        public Wrappers.SteamUser017 SteamUser { get; set; }
+        public Wrappers.SteamUserStats011 SteamUserStats { get; set; }
+        public Wrappers.SteamUtils007 SteamUtils { get; set; }
         public Wrappers.SteamApps001 SteamApps001 { get; set; }
         public Wrappers.SteamApps008 SteamApps008 { get; set; }
+        public Wrappers.SteamRemoteStorage012 SteamRemoteStorage { get; set; }
         public bool IsConnectToSteam { get; set; }
 
         private bool _IsDisposed = false;
@@ -62,27 +63,25 @@ namespace SAM.API
             {
                 if (appId != 0)
                 {
-                    if (OperatingSystem.IsWindows())
+                    Environment.SetEnvironmentVariable(KEY_STEAM_APP_ID, appId.ToString(CultureInfo.InvariantCulture));
+                    
+                    if (Steam.Load() == false)
                     {
-                        Environment.SetEnvironmentVariable(KEY_STEAM_APP_ID, appId.ToString(CultureInfo.InvariantCulture));
-                    }
-                    else if (OperatingSystem.IsMacOS() || OperatingSystem.IsLinux() && !OperatingSystem.IsAndroid())
-                    {
-                        if (WriteSteamAppIdTxt)
+                        steam_appid_file_path = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "steam_appid.txt");
+                        File.WriteAllText(steam_appid_file_path, appId.ToString());
+
+                        if (Steam.Load() == false)
                         {
-                            steam_appid_file_path = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "steam_appid.txt");
-                            File.WriteAllText(steam_appid_file_path, appId.ToString());
+                            throw new ClientInitializeException(ClientInitializeFailure.Load, "failed to load Steam");
                         }
                     }
-                    else
-                    {
-                        throw new PlatformNotSupportedException();
-                    }
                 }
-
-                if (Steam.Load() == false)
+                else
                 {
-                    throw new ClientInitializeException(ClientInitializeFailure.Load, "failed to load SteamClient");
+                    if (Steam.Load() == false)
+                    {
+                        throw new ClientInitializeException(ClientInitializeFailure.Load, "failed to load Steam");
+                    }
                 }
 
                 this.SteamClient = Steam.CreateInterface<Wrappers.SteamClient018>("SteamClient018");
@@ -103,7 +102,7 @@ namespace SAM.API
                     throw new ClientInitializeException(ClientInitializeFailure.ConnectToGlobalUser, "failed to connect to global user");
                 }
 
-                this.SteamUtils = this.SteamClient.GetSteamUtils009(this._Pipe);
+                this.SteamUtils = this.SteamClient.GetSteamUtils007(this._Pipe);
                 var currentAppId = this.SteamUtils.GetAppId();
                 if (appId > 0 && currentAppId != (uint)appId)
                 {
@@ -111,10 +110,11 @@ namespace SAM.API
                     throw new ClientInitializeException(ClientInitializeFailure.AppIdMismatch, $"appID mismatch, appId: {appId}"); //, currentAppId: {currentAppId}, envAppId: {envAppId}");
                 }
 
-                this.SteamUser = this.SteamClient.GetSteamUser012(this._User, this._Pipe);
-                this.SteamUserStats = this.SteamClient.GetSteamUserStats006(this._User, this._Pipe);
+                this.SteamUser = this.SteamClient.GetSteamUser017(this._User, this._Pipe);
+                this.SteamUserStats = this.SteamClient.GetSteamUserStats011(this._User, this._Pipe);
                 this.SteamApps001 = this.SteamClient.GetSteamApps001(this._User, this._Pipe);
                 this.SteamApps008 = this.SteamClient.GetSteamApps008(this._User, this._Pipe);
+                this.SteamRemoteStorage = this.SteamClient.GetSteamRemoteStorage012(this._User, this._Pipe);
             }
             finally
             {

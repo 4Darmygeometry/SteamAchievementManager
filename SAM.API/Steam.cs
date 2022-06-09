@@ -132,82 +132,89 @@ namespace SAM.API
 
         public static bool Load()
         {
-            if (_Handle != IntPtr.Zero)
+            try
             {
+                if (_Handle != IntPtr.Zero)
+                {
+                    return true;
+                }
+
+                string path = GetInstallPath();
+                if (path == null)
+                {
+                    return false;
+                }
+
+                //if (OperatingSystem.IsWindows())
+                //    Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
+
+                if (OperatingSystem.IsMacOS())
+                {
+                    path = Path.Combine(path, "steamclient.dylib");
+                }
+                else if (OperatingSystem.IsWindows())
+                {
+                    // C:\Program Files (x86)\Steam\steamclient64.dll
+                    path = Path.Combine(path,
+                        Environment.Is64BitProcess ?
+                            "steamclient64.dll" :
+                            "steamclient.dll");
+                }
+                else if (OperatingSystem.IsLinux() && !OperatingSystem.IsAndroid())
+                {
+                    // /home/{0}/.local/share/Steam/linux64/steamclient.so
+                    path = Path.Combine(path,
+                        Environment.Is64BitProcess ?
+                            "linux64" :
+                            "linux32",
+                        "steamclient.so");
+                }
+                else
+                {
+                    throw new PlatformNotSupportedException();
+                }
+
+                IntPtr module;
+
+                //if (OperatingSystem.IsWindows())
+                //{
+                //    module = Native.Windows.LoadLibraryEx(path, IntPtr.Zero, Native.Windows.LoadWithAlteredSearchPath);
+                //}
+                //else
+                {
+                    module = NativeLibrary.Load(path);
+                }
+
+                if (module == IntPtr.Zero)
+                {
+                    return false;
+                }
+
+                _CallCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
+                if (_CallCreateInterface == null)
+                {
+                    return false;
+                }
+
+                _CallSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
+                if (_CallSteamBGetCallback == null)
+                {
+                    return false;
+                }
+
+                _CallSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
+                if (_CallSteamFreeLastCallback == null)
+                {
+                    return false;
+                }
+
+                _Handle = module;
                 return true;
             }
-
-            string path = GetInstallPath();
-            if (path == null)
+            catch
             {
                 return false;
             }
-
-            //if (OperatingSystem.IsWindows())
-            //    Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
-
-            if (OperatingSystem.IsMacOS())
-            {
-                path = Path.Combine(path, "steamclient.dylib");
-            }
-            else if (OperatingSystem.IsWindows())
-            {
-                // C:\Program Files (x86)\Steam\steamclient64.dll
-                path = Path.Combine(path,
-                    Environment.Is64BitProcess ?
-                        "steamclient64.dll" :
-                        "steamclient.dll");
-            }
-            else if (OperatingSystem.IsLinux() && !OperatingSystem.IsAndroid())
-            {
-                // /home/{0}/.local/share/Steam/linux64/steamclient.so
-                path = Path.Combine(path,
-                    Environment.Is64BitProcess ?
-                        "linux64" :
-                        "linux32",
-                    "steamclient.so");
-            }
-            else
-            {
-                throw new PlatformNotSupportedException();
-            }
-
-            IntPtr module;
-
-            //if (OperatingSystem.IsWindows())
-            //{
-            //    module = Native.Windows.LoadLibraryEx(path, IntPtr.Zero, Native.Windows.LoadWithAlteredSearchPath);
-            //}
-            //else
-            {
-                module = NativeLibrary.Load(path);
-            }
-
-            if (module == IntPtr.Zero)
-            {
-                return false;
-            }
-
-            _CallCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
-            if (_CallCreateInterface == null)
-            {
-                return false;
-            }
-
-            _CallSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
-            if (_CallSteamBGetCallback == null)
-            {
-                return false;
-            }
-
-            _CallSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
-            if (_CallSteamFreeLastCallback == null)
-            {
-                return false;
-            }
-
-            _Handle = module;
-            return true;
         }
     }
 }
