@@ -153,20 +153,20 @@ namespace SAM.API.Wrappers
 
         public string GetFileNameAndSize(int iFile, out int pnFileSizeInBytes)
         {
-            return Helpers.DecodeANSIReturn(Marshal.PtrToStringAnsi(
+            return NativeStrings.PointerToString(
                 this.GetFunction<NativeGetFileNameAndSizeII>(
-                    this.Functions.GetFileNameAndSize)(this.ObjectAddress, iFile, out pnFileSizeInBytes)));
+                    this.Functions.GetFileNameAndSize)(this.ObjectAddress, iFile, out pnFileSizeInBytes));
         }
         #endregion
 
         #region GetQuota
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool NativeGetQuotaII(IntPtr thisptr, out ulong pnTotalBytes, out ulong puAvailableBytes);
+        private delegate bool NativeGetQuota(IntPtr thisptr, out ulong pnTotalBytes, out ulong puAvailableBytes);
 
         public bool GetQuota(out ulong pnTotalBytes, out ulong puAvailableBytes)
         {
-            return this.GetFunction<NativeGetQuotaII>(this.Functions.GetQuota)(this.ObjectAddress, out pnTotalBytes, out puAvailableBytes);
+            return this.GetFunction<NativeGetQuota>(this.Functions.GetQuota)(this.ObjectAddress, out pnTotalBytes, out puAvailableBytes);
         }
         #endregion
 
@@ -174,7 +174,7 @@ namespace SAM.API.Wrappers
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate bool NativeIsCloudEnabledForAccount(IntPtr thisptr);
-        
+
 
         public bool IsCloudEnabledForAccount()
         {
@@ -186,7 +186,7 @@ namespace SAM.API.Wrappers
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate bool NativeIsCloudEnabledForApp(IntPtr thisptr);
-        
+
         public bool IsCloudEnabledForApp()
         {
             return this.Call<bool, NativeIsCloudEnabledForApp>(this.Functions.IsCloudEnabledForApp, this.ObjectAddress);
@@ -194,14 +194,14 @@ namespace SAM.API.Wrappers
         #endregion
 
         #region SetCloudEnabledForApp
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)] 
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate void NativeSetCloudEnabledForAppB(IntPtr thisptr, [MarshalAs(UnmanagedType.I1)] bool bEnabled);
-        
+
         public void SetCloudEnabledForApp(bool bEnabled)
         {
             this.Call<NativeSetCloudEnabledForAppB>(this.Functions.SetCloudEnabledForApp, this.ObjectAddress, bEnabled);
         }
         #endregion
-        
+
     }
 }
