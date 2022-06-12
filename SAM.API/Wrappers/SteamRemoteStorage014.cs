@@ -32,108 +32,118 @@ namespace SAM.API.Wrappers
         #region FileWrite
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool NativeFileWriteSBI(IntPtr self, string pchFile, Byte[] pvData, int cubData);
+        private delegate bool NativeFileWriteSBI(IntPtr self, IntPtr pchFile, Byte[] pvData, int cubData);
 
         public bool FileWrite(string pchFile, Byte[] pvData)
         {
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
             return this.GetFunction<NativeFileWriteSBI>(this.Functions.FileWrite)
-                (this.ObjectAddress, pchFile, pvData, pvData.Length);
+            (this.ObjectAddress, nativeName.Handle, pvData, pvData.Length);
         }
         #endregion
 
         #region FileWrite
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeFileReadSBI(IntPtr thisptr, string pchFile, Byte[] pvData, int cubDataToRead);
+        private delegate int NativeFileReadSBI(IntPtr thisptr, IntPtr pchFile, Byte[] pvData, int cubDataToRead);
 
         public int FileRead(string pchFile, Byte[] pvData)
         {
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
             return this.GetFunction<NativeFileReadSBI>(this.Functions.FileRead)
-                (this.ObjectAddress, pchFile, pvData, pvData.Length);
+                (this.ObjectAddress, nativeName.Handle, pvData, pvData.Length);
         }
         #endregion
 
         #region FileForget
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool NativeFileForgetS(IntPtr thisptr, string pchFile);
+        private delegate bool NativeFileForgetS(IntPtr thisptr, IntPtr pchFile);
 
         public bool FileForget(string pchFile)
         {
-            return this.Call<bool, NativeFileForgetS>(this.Functions.FileForget, this.ObjectAddress, pchFile);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<bool, NativeFileForgetS>(this.Functions.FileForget, this.ObjectAddress, nativeName.Handle);
         }
         #endregion
 
         #region FileDelete
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool NativeFileDeleteS(IntPtr thisptr, string pchFile);
+        private delegate bool NativeFileDeleteS(IntPtr thisptr, IntPtr pchFile);
 
         public bool FileDelete(string pchFile)
         {
-            return this.Call<bool, NativeFileDeleteS>(this.Functions.FileDelete, this.ObjectAddress, pchFile);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<bool, NativeFileDeleteS>(this.Functions.FileDelete, this.ObjectAddress, nativeName.Handle);
         }
         #endregion
 
         #region SetSyncPlatforms
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool NativeSetSyncPlatformsSE(IntPtr thisptr, string pchFile, ERemoteStoragePlatform eRemoteStoragePlatform);
+        private delegate bool NativeSetSyncPlatformsSE(IntPtr thisptr, IntPtr pchFile, ERemoteStoragePlatform eRemoteStoragePlatform);
 
         public bool SetSyncPlatforms(string pchFile, ERemoteStoragePlatform eRemoteStoragePlatform)
         {
-            return this.Call<bool, NativeSetSyncPlatformsSE>(this.Functions.SetSyncPlatforms, this.ObjectAddress, pchFile, eRemoteStoragePlatform);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<bool, NativeSetSyncPlatformsSE>(this.Functions.SetSyncPlatforms, this.ObjectAddress, nativeName.Handle, eRemoteStoragePlatform);
         }
         #endregion
 
         #region FileExists
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool NativeFileExistsS(IntPtr thisptr, string pchFile);
+        private delegate bool NativeFileExistsS(IntPtr thisptr, IntPtr pchFile);
 
         public bool FileExists(string pchFile)
         {
-            return this.Call<bool, NativeFileExistsS>(this.Functions.FileExists, this.ObjectAddress, pchFile);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<bool, NativeFileExistsS>(this.Functions.FileExists, this.ObjectAddress, nativeName.Handle);
         }
         #endregion
 
         #region FilePersisted
         [return: MarshalAs(UnmanagedType.I1)]
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate bool NativeFilePersistedS(IntPtr thisptr, string pchFile);
+        private delegate bool NativeFilePersistedS(IntPtr thisptr, IntPtr pchFile);
 
         public bool FilePersisted(string pchFile)
         {
-            return this.Call<bool, NativeFilePersistedS>(this.Functions.FilePersisted, this.ObjectAddress, pchFile);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<bool, NativeFilePersistedS>(this.Functions.FilePersisted, this.ObjectAddress, nativeName.Handle);
         }
         #endregion
 
         #region GetFileSize
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeGetFileSizeS(IntPtr thisptr, string pchFile);
+        private delegate int NativeGetFileSizeS(IntPtr thisptr, IntPtr pchFile);
 
         public int GetFileSize(string pchFile)
         {
-            return this.Call<int, NativeGetFileSizeS>(this.Functions.GetFileSize, this.ObjectAddress, pchFile);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<int, NativeGetFileSizeS>(this.Functions.GetFileSize, this.ObjectAddress, nativeName.Handle);
         }
         #endregion
 
         #region GetFileTimestamp
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate long NativeGetFileTimestampS(IntPtr thisptr, string pchFile);
+        private delegate long NativeGetFileTimestampS(IntPtr thisptr, IntPtr pchFile);
 
         public long GetFileTimestamp(string pchFile)
         {
-            return this.Call<long, NativeGetFileTimestampS>(this.Functions.GetFileTimestamp, this.ObjectAddress, pchFile);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<long, NativeGetFileTimestampS>(this.Functions.GetFileTimestamp, this.ObjectAddress, nativeName.Handle);
         }
         #endregion
 
         #region GetSyncPlatforms
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate ERemoteStoragePlatform NativeGetSyncPlatformsS(IntPtr thisptr, string pchFile);
+        private delegate ERemoteStoragePlatform NativeGetSyncPlatformsS(IntPtr thisptr, IntPtr pchFile);
 
         public ERemoteStoragePlatform GetSyncPlatforms(string pchFile)
         {
-            return this.Call<ERemoteStoragePlatform, NativeGetSyncPlatformsS>(this.Functions.GetSyncPlatforms, this.ObjectAddress, pchFile);
+            using var nativeName = NativeStrings.StringToStringHandle(pchFile);
+            return this.Call<ERemoteStoragePlatform, NativeGetSyncPlatformsS>(this.Functions.GetSyncPlatforms, this.ObjectAddress, nativeName.Handle);
         }
         #endregion
 
