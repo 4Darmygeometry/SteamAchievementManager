@@ -54,43 +54,11 @@ namespace SAM.API.Wrappers
 
         #region IsSteamChinaLauncher
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeIsSteamChinaLauncher(IntPtr self);
         public bool IsSteamChinaLauncher()
         {
             var result = this.Call<bool, NativeIsSteamChinaLauncher>(this.Functions.IsSteamChinaLauncher, this.ObjectAddress);
-            return result;
-        }
-        #endregion
-
-        #region IsSteamInBigPictureMode
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private delegate bool NativeIsSteamInBigPictureMode(IntPtr self);
-        public bool IsSteamInBigPictureMode()
-        {
-            var result = this.Call<bool, NativeIsSteamInBigPictureMode>(this.Functions.IsSteamInBigPictureMode, this.ObjectAddress);
-            return result;
-        }
-        #endregion
-
-        #region GetServerRealTime
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate uint NativeGetServerRealTime(IntPtr self);
-        public uint GetServerRealTime()
-        {
-            var result = this.Call<uint, NativeGetServerRealTime>(this.Functions.GetServerRealTime, this.ObjectAddress);
-            return result;
-        }
-        #endregion
-
-
-        #region GetSecondsSinceAppActive
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate uint NativeGetSecondsSinceAppActive(IntPtr self);
-        public uint GetSecondsSinceAppActive()
-        {
-            var result = this.Call<uint, NativeGetSecondsSinceAppActive>(this.Functions.GetSecondsSinceAppActive, this.ObjectAddress);
             return result;
         }
         #endregion

@@ -175,7 +175,7 @@ namespace SAM.API.Wrappers
         #region GetSteamUtils009
         public SteamUtils007 GetSteamUtils007(int pipe)
         {
-            return this.GetISteamUtils<SteamUtils007>(pipe, "SteamUtils009");
+            return this.GetISteamUtils<SteamUtils007>(pipe, "SteamUtils007");
         }
         #endregion
 

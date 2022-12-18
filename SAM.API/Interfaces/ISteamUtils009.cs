@@ -1,4 +1,4 @@
-/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -33,7 +33,6 @@ namespace SAM.API.Interfaces
         public IntPtr GetConnectedUniverse;
         public IntPtr GetServerRealTime;
         public IntPtr GetIPCountry;
-        public IntPtr GetSteamUILanguage;
         public IntPtr GetImageSize;
         public IntPtr GetImageRGBA;
         public IntPtr GetCSERIPPort;
@@ -48,7 +47,6 @@ namespace SAM.API.Interfaces
         public IntPtr SetWarningMessageHook;
         public IntPtr IsOverlayEnabled;
         public IntPtr IsSteamChinaLauncher;
-        public IntPtr IsSteamInBigPictureMode;
         public IntPtr IsSteamRunningInVR;
         public IntPtr OverlayNeedsPresent;
         public IntPtr IsSteamInBigPictureMode;
