@@ -51,5 +51,6 @@ namespace SAM.API.Interfaces
         public IntPtr IsSteamInBigPictureMode;
         public IntPtr IsSteamRunningInVR;
         public IntPtr OverlayNeedsPresent;
+        public IntPtr IsSteamInBigPictureMode;
     }
 }

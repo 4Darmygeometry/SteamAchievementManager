@@ -144,5 +144,36 @@ namespace SAM.API.Wrappers
             return this.Call<uint, NativeGetAppId>(this.Functions.GetAppID, this.ObjectAddress);
         }
         #endregion
+        
+        #region GetServerRealTime
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate uint NativeGetServerRealTime(IntPtr self);
+
+        public uint GetServerRealTime()
+        {
+            return this.Call<uint, NativeGetServerRealTime>(this.Functions.GetServerRealTime, this.ObjectAddress);
+        }
+        #endregion
+
+        #region GetSecondsSinceAppActive
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        private delegate uint NativeGetSecondsSinceAppActive(IntPtr self);
+
+        public uint GetSecondsSinceAppActive()
+        {
+            return this.Call<uint, NativeGetSecondsSinceAppActive>(this.Functions.GetSecondsSinceAppActive, this.ObjectAddress);
+        }
+        #endregion
+        
+        #region IsSteamInBigPictureMode
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private delegate bool NativeIsSteamInBigPictureMode(IntPtr self);
+
+        public bool IsSteamInBigPictureMode()
+        {
+            return this.Call<bool, NativeIsSteamInBigPictureMode>(this.Functions.IsSteamInBigPictureMode, this.ObjectAddress);
+        }
+        #endregion
     }
 }
