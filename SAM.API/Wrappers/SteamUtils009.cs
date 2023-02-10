@@ -21,127 +21,125 @@
  */
 
 using SAM.API.Interfaces;
-using System;
 using System.Runtime.InteropServices;
 
-namespace SAM.API.Wrappers
+namespace SAM.API.Wrappers;
+
+/// <summary>
+/// https://partner.steamgames.com/doc/api/ISteamUtils?language=english
+/// </summary>
+public class SteamUtils007 : NativeWrapper<ISteamUtils009>
 {
-    /// <summary>
-    /// https://partner.steamgames.com/doc/api/ISteamUtils?language=english
-    /// </summary>
-    public class SteamUtils007 : NativeWrapper<ISteamUtils009>
+    #region GetConnectedUniverse
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate int NativeGetConnectedUniverse(IntPtr self);
+
+    public int GetConnectedUniverse()
     {
-        #region GetConnectedUniverse
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeGetConnectedUniverse(IntPtr self);
-
-        public int GetConnectedUniverse()
-        {
-            return this.Call<int, NativeGetConnectedUniverse>(this.Functions.GetConnectedUniverse, this.ObjectAddress);
-        }
-        #endregion
-
-        #region GetIPCountry
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetIPCountry(IntPtr self);
-
-        public string GetIPCountry()
-        {
-            var result = this.Call<IntPtr, NativeGetIPCountry>(this.Functions.GetIPCountry, this.ObjectAddress);
-            return NativeStrings.PointerToString(result);
-        }
-        #endregion
-
-        #region IsSteamChinaLauncher
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeIsSteamChinaLauncher(IntPtr self);
-        public bool IsSteamChinaLauncher()
-        {
-            var result = this.Call<bool, NativeIsSteamChinaLauncher>(this.Functions.IsSteamChinaLauncher, this.ObjectAddress);
-            return result;
-        }
-        #endregion
-
-        #region IsSteamRunningInVR
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeIsSteamRunningInVR(IntPtr self);
-        public bool IsSteamRunningInVR()
-        {
-            return this.Call<bool, NativeIsSteamRunningInVR>(this.Functions.IsSteamRunningInVR, this.ObjectAddress);
-        }
-
-        #endregion
-
-        #region GetImageSize
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetImageSize(IntPtr self, int index, out int width, out int height);
-
-        public bool GetImageSize(int index, out int width, out int height)
-        {
-            var call = this.GetFunction<NativeGetImageSize>(this.Functions.GetImageSize);
-            return call(this.ObjectAddress, index, out width, out height);
-        }
-        #endregion
-
-        #region GetImageRGBA
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetImageRGBA(IntPtr self, int index, byte[] buffer, int length);
-
-        public bool GetImageRGBA(int index, byte[] data)
-        {
-            if (data == null)
-            {
-                throw new ArgumentNullException("data");
-            }
-            var call = this.GetFunction<NativeGetImageRGBA>(this.Functions.GetImageRGBA);
-            return call(this.ObjectAddress, index, data, data.Length);
-        }
-        #endregion
-
-        #region GetAppID
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate uint NativeGetAppId(IntPtr self);
-
-        public uint GetAppId()
-        {
-            return this.Call<uint, NativeGetAppId>(this.Functions.GetAppID, this.ObjectAddress);
-        }
-        #endregion
-        
-        #region GetServerRealTime
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate uint NativeGetServerRealTime(IntPtr self);
-
-        public uint GetServerRealTime()
-        {
-            return this.Call<uint, NativeGetServerRealTime>(this.Functions.GetServerRealTime, this.ObjectAddress);
-        }
-        #endregion
-
-        #region GetSecondsSinceAppActive
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate uint NativeGetSecondsSinceAppActive(IntPtr self);
-
-        public uint GetSecondsSinceAppActive()
-        {
-            return this.Call<uint, NativeGetSecondsSinceAppActive>(this.Functions.GetSecondsSinceAppActive, this.ObjectAddress);
-        }
-        #endregion
-        
-        #region IsSteamInBigPictureMode
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeIsSteamInBigPictureMode(IntPtr self);
-
-        public bool IsSteamInBigPictureMode()
-        {
-            return this.Call<bool, NativeIsSteamInBigPictureMode>(this.Functions.IsSteamInBigPictureMode, this.ObjectAddress);
-        }
-        #endregion
+        return Call<int, NativeGetConnectedUniverse>(Functions.GetConnectedUniverse, ObjectAddress);
     }
+    #endregion
+
+    #region GetIPCountry
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate IntPtr NativeGetIPCountry(IntPtr self);
+
+    public string GetIPCountry()
+    {
+        var result = Call<IntPtr, NativeGetIPCountry>(Functions.GetIPCountry, ObjectAddress);
+        return NativeStrings.PointerToString(result);
+    }
+    #endregion
+
+    #region IsSteamChinaLauncher
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private delegate bool NativeIsSteamChinaLauncher(IntPtr self);
+    public bool IsSteamChinaLauncher()
+    {
+        var result = Call<bool, NativeIsSteamChinaLauncher>(Functions.IsSteamChinaLauncher, ObjectAddress);
+        return result;
+    }
+    #endregion
+
+    #region IsSteamRunningInVR
+
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private delegate bool NativeIsSteamRunningInVR(IntPtr self);
+    public bool IsSteamRunningInVR()
+    {
+        return Call<bool, NativeIsSteamRunningInVR>(Functions.IsSteamRunningInVR, ObjectAddress);
+    }
+
+    #endregion
+
+    #region GetImageSize
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private delegate bool NativeGetImageSize(IntPtr self, int index, out int width, out int height);
+
+    public bool GetImageSize(int index, out int width, out int height)
+    {
+        var call = GetFunction<NativeGetImageSize>(Functions.GetImageSize);
+        return call(ObjectAddress, index, out width, out height);
+    }
+    #endregion
+
+    #region GetImageRGBA
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private delegate bool NativeGetImageRGBA(IntPtr self, int index, byte[] buffer, int length);
+
+    public bool GetImageRGBA(int index, byte[] data)
+    {
+        if (data == null)
+        {
+            throw new ArgumentNullException("data");
+        }
+        var call = GetFunction<NativeGetImageRGBA>(Functions.GetImageRGBA);
+        return call(ObjectAddress, index, data, data.Length);
+    }
+    #endregion
+
+    #region GetAppID
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate uint NativeGetAppId(IntPtr self);
+
+    public uint GetAppId()
+    {
+        return Call<uint, NativeGetAppId>(Functions.GetAppID, ObjectAddress);
+    }
+    #endregion
+    
+    #region GetServerRealTime
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate uint NativeGetServerRealTime(IntPtr self);
+
+    public uint GetServerRealTime()
+    {
+        return Call<uint, NativeGetServerRealTime>(Functions.GetServerRealTime, ObjectAddress);
+    }
+    #endregion
+
+    #region GetSecondsSinceAppActive
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate uint NativeGetSecondsSinceAppActive(IntPtr self);
+
+    public uint GetSecondsSinceAppActive()
+    {
+        return Call<uint, NativeGetSecondsSinceAppActive>(Functions.GetSecondsSinceAppActive, ObjectAddress);
+    }
+    #endregion
+    
+    #region IsSteamInBigPictureMode
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private delegate bool NativeIsSteamInBigPictureMode(IntPtr self);
+
+    public bool IsSteamInBigPictureMode()
+    {
+        return Call<bool, NativeIsSteamInBigPictureMode>(Functions.IsSteamInBigPictureMode, ObjectAddress);
+    }
+    #endregion
 }

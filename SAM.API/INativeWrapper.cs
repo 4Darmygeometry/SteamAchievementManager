@@ -20,12 +20,9 @@
  *    distribution.
  */
 
-using System;
+namespace SAM.API;
 
-namespace SAM.API
+public interface INativeWrapper
 {
-    public interface INativeWrapper
-    {
-        void SetupFunctions(IntPtr objectAddress);
-    }
+    void SetupFunctions(IntPtr objectAddress);
 }

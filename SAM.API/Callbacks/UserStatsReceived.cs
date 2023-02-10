@@ -20,18 +20,17 @@
  *    distribution.
  */
 
-namespace SAM.API.Callbacks
-{
-    public class UserStatsReceived : Callback<Types.UserStatsReceived>
-    {
-        public override int Id
-        {
-            get { return 1101; }
-        }
+namespace SAM.API.Callbacks;
 
-        public override bool IsServer
-        {
-            get { return false; }
-        }
+public sealed class UserStatsReceived : Callback<Types.UserStatsReceived>
+{
+    public override int Id
+    {
+        get { return 1101; }
+    }
+
+    public override bool IsServer
+    {
+        get { return false; }
     }
 }

@@ -21,42 +21,40 @@
  */
 
 using SAM.API.Interfaces;
-using System;
 using System.Runtime.InteropServices;
 
-namespace SAM.API.Wrappers
+namespace SAM.API.Wrappers;
+
+public class SteamUser017 : NativeWrapper<ISteamUser019>
 {
-    public class SteamUser017 : NativeWrapper<ISteamUser019>
+    #region GetSteamID
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate void NativeGetSteamId(IntPtr self, out ulong steamId);
+
+    public ulong GetSteamId()
     {
-        #region GetSteamID
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void NativeGetSteamId(IntPtr self, out ulong steamId);
-
-        public ulong GetSteamId()
-        {
-            var call = this.GetFunction<NativeGetSteamId>(this.Functions.GetSteamID);
-            ulong steamId;
-            call(this.ObjectAddress, out steamId);
-            return steamId;
-        }
-        public ulong GetSteamId3()
-        {
-            var call = this.GetFunction<NativeGetSteamId>(this.Functions.GetSteamID);
-            ulong steamId;
-            call(this.ObjectAddress, out steamId);
-            steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
-            return steamId;
-        }
-        #endregion
-
-        #region GetPlayerSteamLevel
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetPlayerSteamLevel(IntPtr self);
-        public IntPtr GetPlayerSteamLevel()
-        {
-            var result = this.Call<IntPtr, NativeGetPlayerSteamLevel>(this.Functions.GetPlayerSteamLevel, this.ObjectAddress);
-            return result;
-        }
-        #endregion
+        var call = GetFunction<NativeGetSteamId>(Functions.GetSteamID);
+        ulong steamId;
+        call(ObjectAddress, out steamId);
+        return steamId;
     }
+    public ulong GetSteamId3()
+    {
+        var call = GetFunction<NativeGetSteamId>(Functions.GetSteamID);
+        ulong steamId;
+        call(ObjectAddress, out steamId);
+        steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
+        return steamId;
+    }
+    #endregion
+
+    #region GetPlayerSteamLevel
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate IntPtr NativeGetPlayerSteamLevel(IntPtr self);
+    public IntPtr GetPlayerSteamLevel()
+    {
+        var result = Call<IntPtr, NativeGetPlayerSteamLevel>(Functions.GetPlayerSteamLevel, ObjectAddress);
+        return result;
+    }
+    #endregion
 }

@@ -20,66 +20,64 @@
  *    distribution.
  */
 
-using System;
 using System.Runtime.InteropServices;
 
-namespace SAM.API.Interfaces
+namespace SAM.API.Interfaces;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct ISteamRemoteStorage014
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct ISteamRemoteStorage014
-    {
-        public IntPtr FileWrite;
-        public IntPtr FileRead;
-        public IntPtr FileForget;
-        public IntPtr FileDelete;
-        public IntPtr FileShare4;
-        public IntPtr SetSyncPlatforms;
-        public IntPtr FileWriteStreamOpen6;
-        public IntPtr FileWriteStreamWriteChunk7;
-        public IntPtr FileWriteStreamClose8;
-        public IntPtr FileWriteStreamCancel9;
-        public IntPtr FileExists;
-        public IntPtr FilePersisted;
-        public IntPtr GetFileSize;
-        public IntPtr GetFileTimestamp;
-        public IntPtr GetSyncPlatforms;
-        public IntPtr GetFileCount;
-        public IntPtr GetFileNameAndSize;
-        public IntPtr GetQuota;
-        public IntPtr IsCloudEnabledForAccount;
-        public IntPtr IsCloudEnabledForApp;
-        public IntPtr SetCloudEnabledForApp;
-        public IntPtr UGCDownload;
-        public IntPtr GetUGCDownloadProgress;
-        public IntPtr GetUGCDetails;
-        public IntPtr UGCRead;
-        public IntPtr GetCachedUGCCount25;
-        public IntPtr GetCachedUGCHandle26;
-        public IntPtr PublishWorkshopFile27;
-        public IntPtr CreatePublishedFileUpdateRequest28;
-        public IntPtr UpdatePublishedFileFile29;
-        public IntPtr UpdatePublishedFilePreviewFile30;
-        public IntPtr UpdatePublishedFileTitle31;
-        public IntPtr UpdatePublishedFileDescription32;
-        public IntPtr UpdatePublishedFileVisibility33;
-        public IntPtr UpdatePublishedFileTags34;
-        public IntPtr CommitPublishedFileUpdate35;
-        public IntPtr GetPublishedFileDetails36;
-        public IntPtr DeletePublishedFile37;
-        public IntPtr EnumerateUserPublishedFiles38;
-        public IntPtr SubscribePublishedFile39;
-        public IntPtr EnumerateUserSubscribedFiles40;
-        public IntPtr UnsubscribePublishedFile41;
-        public IntPtr UpdatePublishedFileSetChangeDescription42;
-        public IntPtr GetPublishedItemVoteDetails43;
-        public IntPtr UpdateUserPublishedItemVote44;
-        public IntPtr GetUserPublishedItemVoteDetails45;
-        public IntPtr EnumerateUserSharedWorkshopFiles46;
-        public IntPtr PublishVideo47;
-        public IntPtr SetUserPublishedFileAction48;
-        public IntPtr EnumeratePublishedFilesByUserAction49;
-        public IntPtr EnumeratePublishedWorkshopFiles50;
-        public IntPtr UGCDownloadToLocation51;
-        private IntPtr DTorISteamRemoteStorage01252;
-    }
+    public IntPtr FileWrite;
+    public IntPtr FileRead;
+    public IntPtr FileForget;
+    public IntPtr FileDelete;
+    public IntPtr FileShare4;
+    public IntPtr SetSyncPlatforms;
+    public IntPtr FileWriteStreamOpen6;
+    public IntPtr FileWriteStreamWriteChunk7;
+    public IntPtr FileWriteStreamClose8;
+    public IntPtr FileWriteStreamCancel9;
+    public IntPtr FileExists;
+    public IntPtr FilePersisted;
+    public IntPtr GetFileSize;
+    public IntPtr GetFileTimestamp;
+    public IntPtr GetSyncPlatforms;
+    public IntPtr GetFileCount;
+    public IntPtr GetFileNameAndSize;
+    public IntPtr GetQuota;
+    public IntPtr IsCloudEnabledForAccount;
+    public IntPtr IsCloudEnabledForApp;
+    public IntPtr SetCloudEnabledForApp;
+    public IntPtr UGCDownload;
+    public IntPtr GetUGCDownloadProgress;
+    public IntPtr GetUGCDetails;
+    public IntPtr UGCRead;
+    public IntPtr GetCachedUGCCount25;
+    public IntPtr GetCachedUGCHandle26;
+    public IntPtr PublishWorkshopFile27;
+    public IntPtr CreatePublishedFileUpdateRequest28;
+    public IntPtr UpdatePublishedFileFile29;
+    public IntPtr UpdatePublishedFilePreviewFile30;
+    public IntPtr UpdatePublishedFileTitle31;
+    public IntPtr UpdatePublishedFileDescription32;
+    public IntPtr UpdatePublishedFileVisibility33;
+    public IntPtr UpdatePublishedFileTags34;
+    public IntPtr CommitPublishedFileUpdate35;
+    public IntPtr GetPublishedFileDetails36;
+    public IntPtr DeletePublishedFile37;
+    public IntPtr EnumerateUserPublishedFiles38;
+    public IntPtr SubscribePublishedFile39;
+    public IntPtr EnumerateUserSubscribedFiles40;
+    public IntPtr UnsubscribePublishedFile41;
+    public IntPtr UpdatePublishedFileSetChangeDescription42;
+    public IntPtr GetPublishedItemVoteDetails43;
+    public IntPtr UpdateUserPublishedItemVote44;
+    public IntPtr GetUserPublishedItemVoteDetails45;
+    public IntPtr EnumerateUserSharedWorkshopFiles46;
+    public IntPtr PublishVideo47;
+    public IntPtr SetUserPublishedFileAction48;
+    public IntPtr EnumeratePublishedFilesByUserAction49;
+    public IntPtr EnumeratePublishedWorkshopFiles50;
+    public IntPtr UGCDownloadToLocation51;
+    private IntPtr DTorISteamRemoteStorage01252;
 }

@@ -21,200 +21,195 @@
  */
 
 using Microsoft.Win32;
-using System;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 
-namespace SAM.API
+namespace SAM.API;
+
+public static class Steam
 {
-    public static class Steam
+    private static class Native
     {
-        private static class Native
+        //[SupportedOSPlatform("Windows")]
+        //[DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        //internal static extern IntPtr GetProcAddress(IntPtr module, string name);
+
+        //[SupportedOSPlatform("Windows")]
+        //[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        //internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
+
+        //internal const uint LoadWithAlteredSearchPath = 8;
+
+        internal static IntPtr GetExport(IntPtr handle, string name)
         {
-            //[SupportedOSPlatform("Windows")]
-            //[DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-            //internal static extern IntPtr GetProcAddress(IntPtr module, string name);
+            //if (OperatingSystem.IsWindows())
+            //{
+            //    return GetProcAddress(handle, name);
+            //}
+            //else
+            //{
+            return NativeLibrary.GetExport(handle, name);
+            //}
+        }
+    }
 
-            //[SupportedOSPlatform("Windows")]
-            //[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            //internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
+    //private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
+    //{
+    //    IntPtr address = Native.GetExport(module, name);
+    //    return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
+    //}
 
-            //internal const uint LoadWithAlteredSearchPath = 8;
+    //private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
+    //    where TDelegate : class
+    //{
+    //    return (TDelegate)(object)GetExportDelegate<TDelegate>(module, name);
+    //}
 
-            internal static IntPtr GetExport(IntPtr handle, string name)
+    private static TDelegate? GetExportFunction<TDelegate>(IntPtr module, string name)
+       where TDelegate : class
+    {
+        IntPtr address = Native.GetExport(module, name);
+        return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer<TDelegate>(address);
+    }
+
+    private static IntPtr _Handle = IntPtr.Zero;
+
+    public static Func<string>? GetInstallPathDelegate { private get; set; }
+
+    public static string? GetInstallPath()
+    {
+        if (GetInstallPathDelegate != null)
+            return GetInstallPathDelegate();
+        if (OperatingSystem.IsWindows())
+            return Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Valve\Steam", "SteamPath", null)?.ToString();
+        else
+            throw new PlatformNotSupportedException();
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private delegate IntPtr NativeCreateInterface(string version, IntPtr returnCode);
+
+    private static NativeCreateInterface? _CallCreateInterface;
+    public static TClass? CreateInterface<TClass>(string version)
+        where TClass : INativeWrapper, new()
+    {
+        var address = _CallCreateInterface!(version, IntPtr.Zero);
+
+        if (address == IntPtr.Zero)
+        {
+            return default;
+        }
+
+        var rez = new TClass();
+        rez.SetupFunctions(address);
+        return rez;
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private delegate bool NativeSteamGetCallback(int pipe, out Types.CallbackMessage message, out int call);
+
+    private static NativeSteamGetCallback? _CallSteamBGetCallback;
+
+    public static bool GetCallback(int pipe, out Types.CallbackMessage message, out int call)
+    {
+        return _CallSteamBGetCallback!(pipe, out message, out call);
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    [return: MarshalAs(UnmanagedType.I1)]
+    private delegate bool NativeSteamFreeLastCallback(int pipe);
+
+    private static NativeSteamFreeLastCallback? _CallSteamFreeLastCallback;
+
+    public static bool FreeLastCallback(int pipe)
+    {
+        return _CallSteamFreeLastCallback!(pipe);
+    }
+
+    public static bool Load()
+    {
+        try
+        {
+            if (_Handle != IntPtr.Zero)
             {
-                //if (OperatingSystem.IsWindows())
-                //{
-                //    return GetProcAddress(handle, name);
-                //}
-                //else
-                //{
-                return NativeLibrary.GetExport(handle, name);
-                //}
-            }
-        }
-
-        //private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
-        //{
-        //    IntPtr address = Native.GetExport(module, name);
-        //    return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
-        //}
-
-        //private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
-        //    where TDelegate : class
-        //{
-        //    return (TDelegate)(object)GetExportDelegate<TDelegate>(module, name);
-        //}
-
-        private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
-           where TDelegate : class
-        {
-            IntPtr address = Native.GetExport(module, name);
-            return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer<TDelegate>(address);
-        }
-
-        private static IntPtr _Handle = IntPtr.Zero;
-
-        public static Func<string> GetInstallPathDelegate { private get; set; }
-
-        public static string GetInstallPath()
-        {
-            if (GetInstallPathDelegate != null)
-                return GetInstallPathDelegate();
-            if (OperatingSystem.IsWindows())
-                return (string)Registry.GetValue(@"HKEY_CURRENT_USER\SOFTWARE\Valve\Steam", "SteamPath", null);
-            else
-                throw new PlatformNotSupportedException();
-        }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private delegate IntPtr NativeCreateInterface(string version, IntPtr returnCode);
-
-        private static NativeCreateInterface _CallCreateInterface;
-
-        public static TClass CreateInterface<TClass>(string version)
-            where TClass : INativeWrapper, new()
-        {
-            IntPtr address = _CallCreateInterface(version, IntPtr.Zero);
-
-            if (address == IntPtr.Zero)
-            {
-                return default;
-            }
-
-            var rez = new TClass();
-            rez.SetupFunctions(address);
-            return rez;
-        }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeSteamGetCallback(int pipe, out Types.CallbackMessage message, out int call);
-
-        private static NativeSteamGetCallback _CallSteamBGetCallback;
-
-        public static bool GetCallback(int pipe, out Types.CallbackMessage message, out int call)
-        {
-            return _CallSteamBGetCallback(pipe, out message, out call);
-        }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeSteamFreeLastCallback(int pipe);
-
-        private static NativeSteamFreeLastCallback _CallSteamFreeLastCallback;
-
-        public static bool FreeLastCallback(int pipe)
-        {
-            return _CallSteamFreeLastCallback(pipe);
-        }
-
-        public static bool Load()
-        {
-            try
-            {
-                if (_Handle != IntPtr.Zero)
-                {
-                    return true;
-                }
-
-                string path = GetInstallPath();
-                if (path == null)
-                {
-                    return false;
-                }
-
-                //if (OperatingSystem.IsWindows())
-                //    Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
-
-                if (OperatingSystem.IsMacOS())
-                {
-                    path = Path.Combine(path, "steamclient.dylib");
-                }
-                else if (OperatingSystem.IsWindows())
-                {
-                    // C:\Program Files (x86)\Steam\steamclient64.dll
-                    path = Path.Combine(path,
-                        Environment.Is64BitProcess ?
-                            "steamclient64.dll" :
-                            "steamclient.dll");
-                }
-                else if (OperatingSystem.IsLinux() && !OperatingSystem.IsAndroid())
-                {
-                    // /home/{0}/.local/share/Steam/linux64/steamclient.so
-                    path = Path.Combine(path,
-                        Environment.Is64BitProcess ?
-                            "linux64" :
-                            "linux32",
-                        "steamclient.so");
-                }
-                else
-                {
-                    throw new PlatformNotSupportedException();
-                }
-
-                IntPtr module;
-
-                //if (OperatingSystem.IsWindows())
-                //{
-                //    module = Native.Windows.LoadLibraryEx(path, IntPtr.Zero, Native.Windows.LoadWithAlteredSearchPath);
-                //}
-                //else
-                {
-                    module = NativeLibrary.Load(path);
-                }
-
-                if (module == IntPtr.Zero)
-                {
-                    return false;
-                }
-
-                _CallCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
-                if (_CallCreateInterface == null)
-                {
-                    return false;
-                }
-
-                _CallSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
-                if (_CallSteamBGetCallback == null)
-                {
-                    return false;
-                }
-
-                _CallSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
-                if (_CallSteamFreeLastCallback == null)
-                {
-                    return false;
-                }
-
-                _Handle = module;
                 return true;
             }
-            catch
+
+            var path = GetInstallPath();
+            if (path == null)
             {
                 return false;
             }
+
+            //if (OperatingSystem.IsWindows())
+            //    Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
+
+            if (OperatingSystem.IsMacOS())
+            {
+                path = Path.Combine(path, "steamclient.dylib");
+            }
+            else if (OperatingSystem.IsWindows())
+            {
+                // C:\Program Files (x86)\Steam\steamclient64.dll
+                path = Path.Combine(path,
+                    Environment.Is64BitProcess ?
+                        "steamclient64.dll" :
+                        "steamclient.dll");
+            }
+            else if (OperatingSystem.IsLinux() && !OperatingSystem.IsAndroid())
+            {
+                // /home/{0}/.local/share/Steam/linux64/steamclient.so
+                path = Path.Combine(path,
+                    Environment.Is64BitProcess ?
+                        "linux64" :
+                        "linux32",
+                    "steamclient.so");
+            }
+            else
+            {
+                throw new PlatformNotSupportedException();
+            }
+
+            IntPtr module;
+
+            //if (OperatingSystem.IsWindows())
+            //{
+            //    module = Native.Windows.LoadLibraryEx(path, IntPtr.Zero, Native.Windows.LoadWithAlteredSearchPath);
+            //}
+            //else
+            {
+                module = NativeLibrary.Load(path);
+            }
+
+            if (module == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            _CallCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
+            if (_CallCreateInterface == null)
+            {
+                return false;
+            }
+
+            _CallSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
+            if (_CallSteamBGetCallback == null)
+            {
+                return false;
+            }
+
+            _CallSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
+            if (_CallSteamFreeLastCallback == null)
+            {
+                return false;
+            }
+
+            _Handle = module;
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

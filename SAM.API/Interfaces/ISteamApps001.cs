@@ -20,14 +20,12 @@
  *    distribution.
  */
 
-using System;
 using System.Runtime.InteropServices;
 
-namespace SAM.API.Interfaces
+namespace SAM.API.Interfaces;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct ISteamApps001
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct ISteamApps001
-    {
-        public IntPtr GetAppData;
-    }
+    public IntPtr GetAppData;
 }

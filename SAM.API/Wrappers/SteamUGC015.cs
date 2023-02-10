@@ -21,15 +21,12 @@
  */
 
 using SAM.API.Interfaces;
-using System;
-using System.Runtime.InteropServices;
 
-namespace SAM.API.Wrappers
+namespace SAM.API.Wrappers;
+
+public class SteamUGC015 : NativeWrapper<ISteamUGC015>
 {
-    public class SteamUGC015 : NativeWrapper<ISteamUGC015>
-    {
-        #region GetAppData
+    #region GetAppData
 
-        #endregion
-    }
+    #endregion
 }

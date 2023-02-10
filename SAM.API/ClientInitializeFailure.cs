@@ -19,16 +19,15 @@
  * 3. This notice may not be removed or altered from any source
  *    distribution.
  */
-namespace SAM.API
+namespace SAM.API;
+
+public enum ClientInitializeFailure : byte
 {
-    public enum ClientInitializeFailure : byte
-    {
-        Unknown = 0,
-        GetInstallPath,
-        Load,
-        CreateSteamClient,
-        CreateSteamPipe,
-        ConnectToGlobalUser,
-        AppIdMismatch,
-    }
+    Unknown = 0,
+    GetInstallPath,
+    Load,
+    CreateSteamClient,
+    CreateSteamPipe,
+    ConnectToGlobalUser,
+    AppIdMismatch,
 }

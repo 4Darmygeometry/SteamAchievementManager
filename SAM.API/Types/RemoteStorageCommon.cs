@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace SAM.API.Types;
 
-namespace SAM.API.Types
+public enum ERemoteStoragePlatform : int
 {
-    public enum ERemoteStoragePlatform : int
-    {
-        k_ERemoteStoragePlatformNone = 0,
-        k_ERemoteStoragePlatformWindows = 1,
-        k_ERemoteStoragePlatformOSX = 2,
-        k_ERemoteStoragePlatformPS3 = 4,
-        k_ERemoteStoragePlatformLinux = 8,
-        k_ERemoteStoragePlatformReserved2 = 16,
-        k_ERemoteStoragePlatformAll = -1,
-    };
-}
+    k_ERemoteStoragePlatformNone = 0,
+    k_ERemoteStoragePlatformWindows = 1,
+    k_ERemoteStoragePlatformOSX = 2,
+    k_ERemoteStoragePlatformPS3 = 4,
+    k_ERemoteStoragePlatformLinux = 8,
+    k_ERemoteStoragePlatformReserved2 = 16,
+    k_ERemoteStoragePlatformAll = -1,
+};

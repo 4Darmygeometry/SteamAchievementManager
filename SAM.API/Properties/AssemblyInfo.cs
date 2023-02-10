@@ -23,6 +23,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
 [assembly: SuppressIldasm]
 
 // General Information about an assembly is controlled through the following
@@ -59,7 +60,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-#if !UnifiedVersion
-[assembly: AssemblyVersion("7.0.0.0")]
-[assembly: AssemblyFileVersion("7.0.0.0")]
-#endif
+[assembly: AssemblyVersion("7.23.10210.11543")]
+[assembly: AssemblyFileVersion("7.23.10210.11543")]
+// 7.(yyyy-2000).1MMdd.1HHmm

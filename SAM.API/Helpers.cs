@@ -1,102 +1,100 @@
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SAM.API
+namespace SAM.API;
+
+internal static class Helpers
 {
-    internal static class Helpers
+    public const int MemoryBufferSize = 1024 * 32;
+
+    private static IntPtr[] MemoryPool = new IntPtr[]
     {
-        public const int MemoryBufferSize = 1024 * 32;
+        Marshal.AllocHGlobal( MemoryBufferSize ),
+        Marshal.AllocHGlobal( MemoryBufferSize ),
+        Marshal.AllocHGlobal( MemoryBufferSize ),
+        Marshal.AllocHGlobal( MemoryBufferSize )
+    };
+    private static int MemoryPoolIndex;
 
-        private static IntPtr[] MemoryPool = new IntPtr[]
+    public static unsafe IntPtr TakeMemory()
+    {
+        lock (MemoryPool)
         {
-            Marshal.AllocHGlobal( MemoryBufferSize ),
-            Marshal.AllocHGlobal( MemoryBufferSize ),
-            Marshal.AllocHGlobal( MemoryBufferSize ),
-            Marshal.AllocHGlobal( MemoryBufferSize )
-        };
-        private static int MemoryPoolIndex;
+            MemoryPoolIndex++;
 
-        public static unsafe IntPtr TakeMemory()
-        {
-            lock (MemoryPool)
-            {
-                MemoryPoolIndex++;
+            if (MemoryPoolIndex >= MemoryPool.Length)
+                MemoryPoolIndex = 0;
 
-                if (MemoryPoolIndex >= MemoryPool.Length)
-                    MemoryPoolIndex = 0;
+            var take = MemoryPool[MemoryPoolIndex];
 
-                var take = MemoryPool[MemoryPoolIndex];
+            ((byte*)take)[0] = 0;
 
-                ((byte*)take)[0] = 0;
-
-                return take;
-            }
-        }
-
-        private static byte[][] BufferPool = new byte[4][];
-        private static int BufferPoolIndex;
-
-        /// <summary>
-        /// Returns a buffer. This will get returned and reused later on.
-        /// We shouldn't really be using this anymore.
-        /// </summary>
-        public static byte[] TakeBuffer(int minSize)
-        {
-            lock (BufferPool)
-            {
-                BufferPoolIndex++;
-
-                if (BufferPoolIndex >= BufferPool.Length)
-                    BufferPoolIndex = 0;
-
-                if (BufferPool[BufferPoolIndex] == null)
-                    BufferPool[BufferPoolIndex] = new byte[1024 * 256];
-
-                if (BufferPool[BufferPoolIndex].Length < minSize)
-                {
-                    BufferPool[BufferPoolIndex] = new byte[minSize + 1024];
-                }
-
-                return BufferPool[BufferPoolIndex];
-            }
-        }
-
-        internal unsafe static string MemoryToString(IntPtr ptr)
-        {
-            var len = 0;
-
-            for (len = 0; len < MemoryBufferSize; len++)
-            {
-                if (((byte*)ptr)[len] == 0)
-                    break;
-            }
-
-            if (len == 0)
-                return string.Empty;
-
-            return UTF8Encoding.UTF8.GetString((byte*)ptr, len);
-        }
-
-        /// <summary>
-        /// Decodes ANSI encoded return string to UTF-8
-        /// </summary>
-        internal static string DecodeANSIReturn(string buffer)
-        {
-            return Encoding.UTF8.GetString(Encoding.Default.GetBytes(buffer));
+            return take;
         }
     }
 
-    internal class MonoPInvokeCallbackAttribute : Attribute
+    private static byte[][] BufferPool = new byte[4][];
+    private static int BufferPoolIndex;
+
+    /// <summary>
+    /// Returns a buffer. This will get returned and reused later on.
+    /// We shouldn't really be using this anymore.
+    /// </summary>
+    public static byte[] TakeBuffer(int minSize)
     {
-        public MonoPInvokeCallbackAttribute()
+        lock (BufferPool)
         {
+            BufferPoolIndex++;
+
+            if (BufferPoolIndex >= BufferPool.Length)
+                BufferPoolIndex = 0;
+
+            if (BufferPool[BufferPoolIndex] == null)
+                BufferPool[BufferPoolIndex] = new byte[1024 * 256];
+
+            if (BufferPool[BufferPoolIndex].Length < minSize)
+            {
+                BufferPool[BufferPoolIndex] = new byte[minSize + 1024];
+            }
+
+            return BufferPool[BufferPoolIndex];
         }
+    }
+
+    internal unsafe static string MemoryToString(IntPtr ptr)
+    {
+        var len = 0;
+
+        for (len = 0; len < MemoryBufferSize; len++)
+        {
+            if (((byte*)ptr)[len] == 0)
+                break;
+        }
+
+        if (len == 0)
+            return string.Empty;
+
+        return UTF8Encoding.UTF8.GetString((byte*)ptr, len);
     }
 
     /// <summary>
-    /// Prevent unity from stripping shit we depend on
-    /// https://docs.unity3d.com/Manual/ManagedCodeStripping.html
+    /// Decodes ANSI encoded return string to UTF-8
     /// </summary>
-    internal class PreserveAttribute : System.Attribute { }
+    internal static string DecodeANSIReturn(string buffer)
+    {
+        return Encoding.UTF8.GetString(Encoding.Default.GetBytes(buffer));
+    }
 }
+
+internal class MonoPInvokeCallbackAttribute : Attribute
+{
+    public MonoPInvokeCallbackAttribute()
+    {
+    }
+}
+
+/// <summary>
+/// Prevent unity from stripping shit we depend on
+/// https://docs.unity3d.com/Manual/ManagedCodeStripping.html
+/// </summary>
+internal class PreserveAttribute : System.Attribute { }
