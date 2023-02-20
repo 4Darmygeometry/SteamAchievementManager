@@ -73,7 +73,7 @@ public static class Steam
 
     private static IntPtr _Handle = IntPtr.Zero;
 
-    public static Func<string>? GetInstallPathDelegate { private get; set; }
+    public static Func<string?>? GetInstallPathDelegate { private get; set; }
 
     public static string? GetInstallPath()
     {
