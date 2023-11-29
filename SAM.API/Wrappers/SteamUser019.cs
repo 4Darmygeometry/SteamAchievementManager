@@ -29,20 +29,17 @@ public class SteamUser017 : NativeWrapper<ISteamUser019>
 {
     #region GetSteamID
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-    private delegate void NativeGetSteamId(IntPtr self, out ulong steamId);
+    private delegate ulong NativeGetSteamId(IntPtr self);
 
     public ulong GetSteamId()
     {
-        var call = GetFunction<NativeGetSteamId>(Functions.GetSteamID);
-        ulong steamId;
-        call(ObjectAddress, out steamId);
+        var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
         return steamId;
     }
+
     public ulong GetSteamId3()
     {
-        var call = GetFunction<NativeGetSteamId>(Functions.GetSteamID);
-        ulong steamId;
-        call(ObjectAddress, out steamId);
+        var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
         steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
         return steamId;
     }
@@ -51,6 +48,7 @@ public class SteamUser017 : NativeWrapper<ISteamUser019>
     #region GetPlayerSteamLevel
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     private delegate IntPtr NativeGetPlayerSteamLevel(IntPtr self);
+
     public IntPtr GetPlayerSteamLevel()
     {
         var result = Call<IntPtr, NativeGetPlayerSteamLevel>(Functions.GetPlayerSteamLevel, ObjectAddress);
