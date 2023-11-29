@@ -31,18 +31,43 @@ public class SteamUser017 : NativeWrapper<ISteamUser019>
     [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
     private delegate ulong NativeGetSteamId(IntPtr self);
 
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate void NativeGetSteamId2(IntPtr self, out ulong steamId);
+
     public ulong GetSteamId()
     {
-        var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
-        return steamId;
+        if (OperatingSystem.IsMacOS())
+        {
+            var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
+            return steamId;
+        }
+        else
+        {
+            var call = GetFunction<NativeGetSteamId2>(Functions.GetSteamID);
+            ulong steamId;
+            call(ObjectAddress, out steamId);
+            return steamId;
+        }
     }
 
     public ulong GetSteamId3()
     {
-        var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
-        steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
-        return steamId;
+        if (OperatingSystem.IsMacOS())
+        {
+            var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
+            steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
+            return steamId;
+        }
+        else
+        {
+            var call = GetFunction<NativeGetSteamId2>(Functions.GetSteamID);
+            ulong steamId;
+            call(ObjectAddress, out steamId);
+            steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
+            return steamId;
+        }
     }
+
     #endregion
 
     #region GetPlayerSteamLevel
