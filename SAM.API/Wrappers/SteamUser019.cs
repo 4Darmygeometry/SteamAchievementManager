@@ -36,33 +36,33 @@ public class SteamUser017 : NativeWrapper<ISteamUser019>
 
     public ulong GetSteamId()
     {
-        if (OperatingSystem.IsMacOS())
-        {
-            var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
-            return steamId;
-        }
-        else
+        if (OperatingSystem.IsWindows())
         {
             var call = GetFunction<NativeGetSteamId2>(Functions.GetSteamID);
             ulong steamId;
             call(ObjectAddress, out steamId);
+            return steamId;
+        }
+        else
+        {
+            var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
             return steamId;
         }
     }
 
     public ulong GetSteamId3()
     {
-        if (OperatingSystem.IsMacOS())
+        if (OperatingSystem.IsWindows())
         {
-            var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
+            var call = GetFunction<NativeGetSteamId2>(Functions.GetSteamID);
+            ulong steamId;
+            call(ObjectAddress, out steamId);
             steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
             return steamId;
         }
         else
         {
-            var call = GetFunction<NativeGetSteamId2>(Functions.GetSteamID);
-            ulong steamId;
-            call(ObjectAddress, out steamId);
+            var steamId = Call<ulong, NativeGetSteamId>(Functions.GetSteamID, ObjectAddress);
             steamId = ((steamId >> (ushort)0) & 0xFFFFFFFF);
             return steamId;
         }
