@@ -242,4 +242,11 @@ public class SteamClient018 : NativeWrapper<ISteamClient018>
         return GetISteamRemoteStorage<SteamRemoteStorage012>(user, pipe, "STEAMREMOTESTORAGE_INTERFACE_VERSION012");
     }
     #endregion
+
+    #region GetSteamInventory
+    public SteamInventory002 GetSteamInventory002(int user, int pipe)
+    {
+        return GetISteamApps<SteamInventory002>(user, pipe, "STEAMINVENTORY_INTERFACE_V002");
+    }
+    #endregion
 }

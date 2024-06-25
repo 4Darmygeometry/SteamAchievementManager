@@ -33,6 +33,8 @@ public class Client : IDisposable
     public Wrappers.SteamApps001 SteamApps001 { get; set; }
     public Wrappers.SteamApps008 SteamApps008 { get; set; }
     public Wrappers.SteamRemoteStorage012 SteamRemoteStorage { get; set; }
+    public Wrappers.SteamInventory002 SteamInventory { get; set; }
+
     public bool IsConnectToSteam { get; set; }
 
     private bool _IsDisposed = false;
@@ -110,6 +112,7 @@ public class Client : IDisposable
             SteamApps001 = SteamClient.GetSteamApps001(_User, _Pipe);
             SteamApps008 = SteamClient.GetSteamApps008(_User, _Pipe);
             SteamRemoteStorage = SteamClient.GetSteamRemoteStorage012(_User, _Pipe);
+            SteamInventory = SteamClient.GetSteamInventory002(_User, _Pipe);
         }
         finally
         {
